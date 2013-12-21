@@ -1,0 +1,16 @@
+・リンク保存
+http://weather.livedoor.com/forecast/rss/primary_area.xml
+を取得
+↓
+<city title="稚内" id="011000" ...>
+から、titleとidを抜出。
+↓
+idから、jsonを取得
+http://weather.livedoor.com/forecast/webservice/json/v1?city=016010
+↓
+jsonのpinpointLocationsから、
+nameとlinkを取得
+↓
+それを表示(csvっぽい)。
+
+
