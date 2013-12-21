@@ -20,7 +20,7 @@ if ($response->is_success) {
 
 my @lines = split('\n', $xml);
 for my $line (@lines) {
-    if ($line =~ m|^<city title="(.*)" id="(\d+)" source=.*/>$|) {
+    if ($line =~ m|<city title="(.*)" id="(\d+)" source=.*/>|) {
         jsonlink($2);
     }
 }
