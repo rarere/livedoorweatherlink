@@ -5,7 +5,6 @@ use XML::Feed;
 use LWP::UserAgent;
 use JSON::PP;
 use Encode;
-use Data::Dumper;
 
 my $uri = "http://weather.livedoor.com/forecast/rss/primary_area.xml";
 my $ua = LWP::UserAgent->new();
