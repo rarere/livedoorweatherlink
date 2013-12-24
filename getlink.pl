@@ -40,10 +40,10 @@ sub jsonlink {
         die $response->status_line;
     }
     my $json = decode_json($rawjson);
-    say encode_utf8($json->{title}) . "," . $json->{link};
+    say encode_utf8($json->{title}) . "," . $json->{link}. ",1";
 
     for my $data (@{$json->{pinpointLocations}}) {
-        say encode_utf8($data->{name}) . "," . $data->{link};
+        say encode_utf8($data->{name}) . "," . $data->{link}.",0";
     }
 }
 
