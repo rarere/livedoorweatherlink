@@ -1,16 +1,19 @@
 ・リンク保存
+http://yanok.net/dist/romaji-chimei-csv/romaji-chimei-all-u.csv
+から地名の漢字とひらがなの対応表を取得
+
 http://weather.livedoor.com/forecast/rss/primary_area.xml
 を取得
 ↓
 <city title="稚内" id="011000" ...>
 から、titleとidを抜出。
-↓
+
 idから、jsonを取得
 http://weather.livedoor.com/forecast/webservice/json/v1?city=016010
 ↓
-jsonのpinpointLocationsから、
-nameとlinkを取得
-↓
-それを表示(csvっぽい)。
+jsonのpinpointLocationsからnameとlinkを取得
 
+nameと、漢字とひらがなの対応表を比較して、
+漢字が同じだったら、Lingua::JA::Mojiでひらがなをローマ字にする
 
+それらをsqliteに保存
