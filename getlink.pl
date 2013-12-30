@@ -17,8 +17,9 @@ my $sql_name;
 my $sth_name;
 my $link_id = 0;
 
-&createtable;
+my $name_hash = {};
 
+&createtable;
 
 my $dbh = DBI->connect("dbi:SQLite:dbname=$database", undef, undef, {
         AutoCommit => 0,
@@ -62,7 +63,11 @@ for my $line (@xml_lines) {
         jsonlink($2);
     }
 }
+$dbh->commit;
 
+while (my ($key, $value) = each %$name_hash) {
+    $sth_name->execute(encode_utf8($key), $value);
+}
 $dbh->commit;
 $dbh->disconnect;
 
@@ -118,26 +123,29 @@ sub jsonlink {
     say encode_utf8($json->{title});
     $link_id++;
     $sth_link->execute($link_id, $json->{link}, 1);
-    $sth_name->execute($json->{title}, $link_id);
+    $name_hash->{$json->{title}} = $link_id;
 
     for my $data (@{$json->{pinpointLocations}}) {
         $link_id++;
         $sth_link->execute($link_id, $data->{link}, 0);
-        $sth_name->execute($data->{name}, $link_id);
+        $name_hash->{$data->{name}} = $link_id;
 
         for my $kana_line (@timei_lines) {
             my @kana = split(",", $kana_line);
             if ($data->{name} eq $kana[0]) {
-                $sth_name->execute($kana[1], $link_id);
-                $sth_name->execute($kana[2], $link_id);
+                $name_hash->{$kana[1]} = $link_id;
+                $name_hash->{$kana[2]} = $link_id;
 
                 my @romaji;
+                push(@romaji, kana2romaji($kana[1], {style=>"passport"}));
                 push(@romaji, kana2romaji($kana[1], {style=>"kunrei",
                         ve_type=>"none"}));
+                push(@romaji, kana2romaji($kana[1], {style=>"kunrei",
+                        ve_type=>"wapuro"}));
                 push(@romaji, kana2romaji($kana[1], {wapuro=>1}));
 
                 for my $roma (@romaji) {
-                    $sth_name->execute($roma, $link_id);
+                    $name_hash->{$roma} = $link_id;
                 }
             }
         }
