@@ -9,7 +9,6 @@ use Encode;
 use Fcntl;
 use DBI;
 use Lingua::JA::Moji 'kana2romaji';
-use Data::Dumper;
 
 my $database = "./tenkilink.db";
 my $sql_link;
@@ -31,7 +30,7 @@ my $dbh = DBI->connect("dbi:SQLite:dbname=$database", undef, undef, {
 
 $sql_link = "insert into t_link (id, link, tenki_flag) values (?, ?, ?)";
 $sth_link = $dbh->prepare($sql_link);
-$sql_name = "insert into t_name (name,name_kanji, link_id) values (?, ?, ?)";
+$sql_name = "insert into t_name (name, name_kanji, link_id) values (?, ?, ?)";
 $sth_name = $dbh->prepare($sql_name);
 
 

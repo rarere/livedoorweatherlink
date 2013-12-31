@@ -12,6 +12,7 @@ idから、jsonを取得
 http://weather.livedoor.com/forecast/webservice/json/v1?city=016010
 ↓
 jsonのpinpointLocationsからnameとlinkを取得
+<<<<<<< HEAD
 
 nameと、漢字とひらがなの対応表を比較して、
 漢字が同じだったら、Lingua::JA::Mojiでひらがなをローマ字にする
@@ -19,9 +20,17 @@ nameと、漢字とひらがなの対応表を比較して、
 それらをsqliteに保存
 
 
+=======
+>>>>>>> 24c92c72d5daca642435a6c3aa1eae654d9feb9e
 
+nameと、漢字とひらがなの対応表を比較して、
+漢字が同じだったら、Lingua::JA::Mojiでひらがなをローマ字にする
 
+<<<<<<< HEAD
 ・テーブル構造
 CREATE TABLE t_link(id int primary key, link text);
 CREATE TABLE t_name(id int primary key, name text not null, link_id int not
 		null, foreign key(link_id) references t_link(id));
+=======
+それらをsqliteに保存
+>>>>>>> 24c92c72d5daca642435a6c3aa1eae654d9feb9e
