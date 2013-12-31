@@ -31,7 +31,7 @@ my $dbh = DBI->connect("dbi:SQLite:dbname=$database", undef, undef, {
 
 $sql_link = "insert into t_link (id, link, tenki_flag) values (?, ?, ?)";
 $sth_link = $dbh->prepare($sql_link);
-$sql_name = "insert into t_name (name, link_id) values (?, ?)";
+$sql_name = "insert into t_name (name,name_kanji, link_id) values (?, ?, ?)";
 $sth_name = $dbh->prepare($sql_name);
 
 
@@ -67,7 +67,8 @@ for my $line (@xml_lines) {
 $dbh->commit;
 
 while (my ($key, $value) = each %$name_hash) {
-    $sth_name->execute(encode_utf8($key), $value);
+    my @str = split(",", $value);
+    $sth_name->execute(encode_utf8($key), $str[0], $str[1]);
 }
 $dbh->commit;
 $dbh->disconnect;
@@ -96,6 +97,7 @@ EOS
 CREATE TABLE t_name(
     id integer primary key autoincrement,
     name text not null,
+    name_kanji text not null,
     link_id int not null,
     foreign key(link_id) references t_link(id)
 );
@@ -124,18 +126,18 @@ sub jsonlink {
     say encode_utf8($json->{title});
     $link_id++;
     $sth_link->execute($link_id, $json->{link}, 1);
-    $name_hash->{$json->{title}} = $link_id;
+    $name_hash->{$json->{title}} = $link_id . "," . $json->{title};
 
     for my $data (@{$json->{pinpointLocations}}) {
         $link_id++;
         $sth_link->execute($link_id, $data->{link}, 0);
-        $name_hash->{$data->{name}} = $link_id;
+        $name_hash->{$data->{name}} = $link_id . "," . $data->{name};
 
         for my $kana_line (@timei_lines) {
             my @kana = split(",", $kana_line);
             if ($data->{name} eq $kana[0]) {
-                $name_hash->{$kana[1]} = $link_id;
-                $name_hash->{$kana[2]} = $link_id;
+                $name_hash->{$kana[1]} = $link_id . "," . $data->{name};
+                $name_hash->{$kana[2]} = $link_id . "," . $data->{name};
 
                 my @romaji;
                 push(@romaji, kana2romaji($kana[1], {style=>"passport"}));
@@ -146,7 +148,7 @@ sub jsonlink {
                 push(@romaji, kana2romaji($kana[1], {wapuro=>1}));
 
                 for my $roma (@romaji) {
-                    $name_hash->{$roma} = $link_id;
+                    $name_hash->{$roma} = $link_id . "," . $data->{name};
                 }
             }
         }
