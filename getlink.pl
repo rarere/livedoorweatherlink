@@ -28,9 +28,9 @@ my $dbh = DBI->connect("dbi:SQLite:dbname=$database", undef, undef, {
     });
 
 
-$sql_link = "insert into t_link (id, link, tenki_flag) values (?, ?, ?)";
+$sql_link = "insert into t_link (id, url, tenki_flag) values (?, ?, ?)";
 $sth_link = $dbh->prepare($sql_link);
-$sql_name = "insert into t_name (name, name_kanji, link_id) values (?, ?, ?)";
+$sql_name = "insert into t_name (name, link_id, name_kanji) values (?, ?, ?)";
 $sth_name = $dbh->prepare($sql_name);
 
 
@@ -87,7 +87,7 @@ sub createtable {
     my $create_table = <<'EOS';
 CREATE TABLE t_link(
     id integer primary key,
-    link text,
+    url text,
     tenki_flag int default 0
 );
 EOS
